@@ -14,11 +14,12 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@quasar/extras": "^1.16.4",
+    "bootstrap": "^5.3.3",
     "core-js": "^3.31.1",
     "quasar": "^2.8.0",
     "vue": "^3.4.18",
     "vue-router": "^4.0.12",
-    "vue-sweetalert2": "^5.0.5"
+    "vue-sweetalert2": "^5.0.9"
   },
   "devDependencies": {
     "@quasar/app-webpack": "^3.9.2"
