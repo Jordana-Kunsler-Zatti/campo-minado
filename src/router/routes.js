@@ -7,13 +7,18 @@ const routes = [
       { path: 'game', name: 'game', component: () => import('pages/GamePage.vue') }
     ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  // {
+  //   path: "/jogo",
+  //   name: "jogo",
+  //   component: () => import("layouts/MainLayout.vue"),
+  //   children: [
+  //     { path: "/jogo", component: () => import("pages/GamePage.vue") },
+  //   ],
+  // },
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
-]
+    path: "/:catchAll(.*)*",
+    component: () => import("pages/ErrorNotFound.vue"),
+  },
+];
 
-export default routes
+export default routes;

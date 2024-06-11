@@ -1,0 +1,28 @@
+export const swalConfs = ({
+  title = "",
+  subtitle = "",
+  icon = "",
+  iconColor = "",
+  showCloseButton = false,
+  buttonConfimLabel = "",
+  buttonDenyLabel = "",
+}) => ({
+  title: `<label class='titleSwal'>${title}</label>`,
+  html: `<label class='subtitleSwal'>${subtitle}</label>`,
+  iconHtml: `<font-awesome-icon class="fa-solid ${icon} iconSwal" />`,
+  width: "20em",
+  iconColor,
+  showCloseButton,
+  showDenyButton: true,
+  showCancelButton: false,
+  allowOutsideClick: false,
+  allowEscapeKey: false,
+  confirmButtonColor: "#0bb3d9",
+  denyButtonColor: "#dedede",
+  confirmButtonText: `<label>${buttonConfimLabel}</label>`,
+  denyButtonText: `<label class="color-gray-dark">${buttonDenyLabel}</label>`,
+  customClass: {
+    confirmButton: "buttonsSwal",
+    denyButton: "buttonsSwal",
+  },
+});
