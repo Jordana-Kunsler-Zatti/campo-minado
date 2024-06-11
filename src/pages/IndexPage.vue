@@ -7,13 +7,15 @@
         color="primary"
         icon-right="arrow_forward"
         label="Ir para o campo"
+        to="/game"
       />
     </div>
   </q-page>
 </template>
 
-<script setup>
-defineOptions({
+<script>
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "IndexPage",
 });
 </script>
