@@ -26,3 +26,28 @@ body {
 .color-gray-dark {
   color: $gray-dark;
 }
+
+.bg-green-light {
+  background-color: $green-light;
+}
+
+.bg-green-medium {
+  background-color: $green-medium;
+}
+
+.bg-beige-light {
+  background-color: $beige-light;
+}
+
+.bg-beige-medium {
+  background-color: $beige-medium;
+}
+
+.fixed-size {
+  width: 10px;
+  height: 10px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}

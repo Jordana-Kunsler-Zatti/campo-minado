@@ -1,14 +1,10 @@
 <template>
   <q-page class="q-mt-none">
-    <q-btn
-      round
-      color="grey-4"
-      icon="home"
-      size="10px"
-      class="absolute-top-left q-mt-none q-ml-md"
-    />
+    <q-btn round color="secondary q-ma-md" @click="handleClickHome()">
+      <font-awesome-icon class="fa-solid fa-house color-gray-dark" />
+    </q-btn>
     
-    <div class="row q-mt-xl flex-center">
+    <div class="row q-mt-md flex-center">
       <q-card class="flex-center no-box-shadow">
         <q-card-section class="column flex-center">
           <q-icon name="flag" size="40px" color="red"/>
@@ -31,7 +27,7 @@
 
     <!-- botão para iniciar o jogo -->
     <div class="row flex-center">
-      <q-btn id="a1"
+      <q-btn
         @click="init()"
         icon-right="send"
         v-bind="startButton"
@@ -53,13 +49,12 @@
           <!-- :label="button.label" -->
           <q-btn
             square
-            :color="button.color"
+            :class="button.color"
             :id="button.id"
             :icon="button.icon"
             @click="buttonFunction(row.id, button.id)"
             v-bind="disableField"
             size="10px"
-            class="fixed-size"
           />
         </div>
       </div>
@@ -67,11 +62,7 @@
 
     <!-- imprime os numeros lógicos do tabuleiro na fase de teste, excluir posteriormente  -->
     <div id="board" class="flex flex-center"></div>
-  
-    <q-btn round color="secondary" @click="handleClickHome()">
-      <font-awesome-icon class="fa-solid fa-house color-gray-dark" />
-    </q-btn>
-    <h1>GAME</h1>
+
   </q-page>
 </template>
 
@@ -116,7 +107,7 @@ export default defineComponent({
         board: [],
         minesPositions: [],
       },
-      disableField:{disable:true},
+      disableField:{disable:true, class:'fixed-size'},
       startButton:{disable:false, label:"Começar", color:"primary"},
       rows:[],
       flagButtonProps:{color:"grey-5", icon: 'flag'},
@@ -139,7 +130,7 @@ export default defineComponent({
             id: i,
             icon:'none',
             // label: i,
-            color: j % 2 === 0 ? i % 2 === 0 ? 'primary' : 'secondary' : i % 2 === 0 ? 'secondary' : 'primary'
+            color: j % 2 === 0 ? i % 2 === 0 ? 'bg-green-medium' : 'bg-green-light' : i % 2 === 0 ? 'bg-green-light' : 'bg-green-medium'
           });
         }
       }
@@ -184,12 +175,12 @@ export default defineComponent({
 
     revealTiles(button, coord) {
       if (coord == 'M') {
-        // Lógica de fim de jogo
+        gameOverToast();
       } else{
         if (button.color != 'primary')  {
-          button.color = 'black'
+          button.color = 'bg-beige-light'
         } else {
-          button.color = 'grey-5'
+          button.color = 'bg-beige-medium'
         }
       }
     },
@@ -309,13 +300,3 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
-.fixed-size {
-  width: 10px;
-  height: 10px;  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-}
-</style>
