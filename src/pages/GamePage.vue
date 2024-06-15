@@ -8,7 +8,7 @@
       <q-card class="flex-center no-box-shadow">
         <q-card-section class="column flex-center">
           <q-icon name="flag" size="40px" color="red"/>
-          {{ game.minesLength }} Bombas
+          {{ bombCount }} Bombas
         </q-card-section>
       </q-card>
       <q-card class="flex-center no-box-shadow">
@@ -44,11 +44,11 @@
 
     <!-- tabuleiro -->
     <div class="col-auto flex-center">
-      <div v-for="row in rows" :key="row.id" class="row flex-center">
+      <div v-for="row in rowsButtons" :key="row.id" class="row flex-center">
         <div v-for="button in row.buttons" :key="button.id">
-          <!-- :label="button.label" -->
           <q-btn
             square
+            unelevated
             :class="button.color"
             :id="button.id"
             :icon="button.icon"
@@ -61,13 +61,13 @@
     </div>
 
     <!-- imprime os numeros lógicos do tabuleiro na fase de teste, excluir posteriormente  -->
-    <div id="board" class="flex flex-center"></div>
+    <!-- <div id="board" class="flex flex-center"></div> -->
 
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, watch } from "vue";
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
 
@@ -84,8 +84,10 @@ const gameOverToast = () => {
     })
   ).then((result) => {
     if (result.isConfirmed) {
+      window.location.reload()
       console.log("Confirmando");
     } else if (result.isDenied) {
+      window.location.href = '/';
       console.log("Negado");
     }
   });
@@ -106,12 +108,15 @@ export default defineComponent({
         minesLength: 13,
         board: [],
         minesPositions: [],
+        tilesRevealed: 0
       },
       disableField:{disable:true, class:'fixed-size'},
       startButton:{disable:false, label:"Começar", color:"primary"},
-      rows:[],
+      rowsButtons:[],
       flagButtonProps:{color:"grey-5", icon: 'flag'},
       flagSwitch: false,
+      iconNumbers: ['','fa-solid fa-1','fa-solid fa-2','fa-solid fa-3','fa-solid fa-4','fa-solid fa-5'],
+      bombCount: 0,
     };
   },
 
@@ -124,12 +129,14 @@ export default defineComponent({
     // Cria os botões que compõe o campo minado
     createButtons() {
       for (let j = 0; j < this.game.boardRowsLength; j++) {
-        this.rows.push({id:j, buttons:[]})
+        this.rowsButtons.push({
+          id:j,
+          buttons:[]
+        })
         for (let i = 0; i < this.game.boardColumnsLength; i++) {
-          this.rows[j].buttons.push({
+          this.rowsButtons[j].buttons.push({
             id: i,
-            icon:'none',
-            // label: i,
+            icon: '',
             color: j % 2 === 0 ? i % 2 === 0 ? 'bg-green-medium' : 'bg-green-light' : i % 2 === 0 ? 'bg-green-light' : 'bg-green-medium'
           });
         }
@@ -151,39 +158,53 @@ export default defineComponent({
 
     // Função atribuida aos botoes do campo para realizar as ações do jogo
     buttonFunction(row, col) {
-      let button = this.rows[row].buttons[col]
-      let coord = this.game.board[row][col]
+      let button = this.rowsButtons[row].buttons[col]
 
       if (this.flagSwitch == true && button.icon == 'flag') {
-        button.icon = 'none'
-      } else if (this.flagSwitch == true && button.icon == 'none') {
+        button.icon = ''
+        this.bombCount--
+      } else if (this.flagSwitch == true && button.icon == '') {
         button.icon = 'flag'
+        this.bombCount++
       }
 
-      if (this.flagSwitch == false) {
-        // if (coord == 0) { this.searchForEmptyTiles(row, col) }
-        this.revealTiles(button, coord)
-      }
+      if (this.flagSwitch == false) {this.revealTiles(row, col)}
+    },
 
+    revealTiles(row, col) {
+      let button = this.rowsButtons[row].buttons[col]
+      let coord = this.game.board[row][col]
+      if (coord == 'M') {
+        gameOverToast();
+        return
+      }
+      if (button.color == 'bg-green-light') {
+        button.color = 'bg-beige-light'
+      } else if (button.color == 'bg-green-medium'){
+        button.color = 'bg-beige-medium'
+      }
+      if (button.icon == 'flag'){button.icon = ''; this.bombCount--}
+      if (coord != 0) {
+        button.icon = this.iconNumbers[coord]
+      }
+      // else {
+      //   this.searchForEmptyTiles(row, col)
+      // }
     },
 
     // searchForEmptyTiles(row, col){
-    //   if (this.game.board[row][col] === 0) {
-    //     this.revealTiles(event,row,col)
+    //   for (let index = 0; index < this.game.cellAroundingMine.length; index++) {
+    //     let newRow = row + this.game.cellAroundingMine[index][0];
+    //     let newCol = col + this.game.cellAroundingMine[index][1];
+    //     console.log(newRow);
+    //     console.log(newCol);
+    //     if (newRow >=0 && newCol >= 0) {
+    //       if (this.game.board[newRow][newCol] === 0) {
+    //         this.revealTiles(newRow,newCol)
+    //       }
+    //     }
     //   }
     // },
-
-    revealTiles(button, coord) {
-      if (coord == 'M') {
-        gameOverToast();
-      } else{
-        if (button.color != 'primary')  {
-          button.color = 'bg-beige-light'
-        } else {
-          button.color = 'bg-beige-medium'
-        }
-      }
-    },
 
     // Função que está atribuída ao botão -começar- para inicializar um novo jogo
     init() {
@@ -191,7 +212,7 @@ export default defineComponent({
       this.generateMinesPositions();
       this.insertMines();
       this.updateBoardNumbers();
-      this.showBoard();
+      // this.showBoard();
       // habilita o toque nos quadrados do campo minado
       this.disableField.disable = false;
       // desabilita o botão -começar- e muda o texto e a cor
@@ -201,18 +222,18 @@ export default defineComponent({
     },
 
     // Função que printa o array da lógica do jogo na tela apagar ou comentar posteriormente
-    showBoard() {
-      let $board = document.getElementById('board')
-      for (let y = 0; y < this.game.board.length; y++) {
-        let $row = document.createElement('DIV');
-        for (let x = 0; x < this.game.board[y].length; x++) {
-            let $cell = document.createElement('BUTTON');
-            $cell.innerHTML = this.game.board[y][x];
-            $row.appendChild($cell);
-        }
-        $board.appendChild($row);
-      }
-    },
+    // showBoard() {
+    //   let $board = document.getElementById('board')
+    //   for (let y = 0; y < this.game.board.length; y++) {
+    //     let $row = document.createElement('DIV');
+    //     for (let x = 0; x < this.game.board[y].length; x++) {
+    //         let $cell = document.createElement('BUTTON');
+    //         $cell.innerHTML = this.game.board[y][x];
+    //         $row.appendChild($cell);
+    //     }
+    //     $board.appendChild($row);
+    //   }
+    // },
 
     // Funções relativas a lógica do campo minado
     generateEmptyBoard() {
@@ -275,6 +296,7 @@ export default defineComponent({
         }
       }
     },
+    
     handleClickHome() {
       Swal.fire(
         swalConfs({
@@ -293,6 +315,7 @@ export default defineComponent({
         if (result.isConfirmed) {
           console.log("Confirmando");
         } else if (result.isDenied) {
+          window.location.href = '/'
           console.log("Negado");
         }
       });
