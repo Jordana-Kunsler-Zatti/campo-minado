@@ -19,13 +19,13 @@
       </q-card>
       <q-card class="flex-center no-box-shadow">
         <q-card-section class="column flex-center">
-          <q-icon name="flag" size="40px" color="yellow"/>
+          <q-icon name="fa-solid fa-trophy" size="40px" color="yellow"/>
           1 Campo
         </q-card-section>
       </q-card>
     </div>
 
-    <!-- botão para iniciar o jogo -->
+    <!-- botão para iniciar o jogo e colocar bandeiras -->
     <div class="row flex-center">
       <q-btn
         @click="init()"
@@ -36,6 +36,7 @@
   
       <q-btn
         round
+        class="absolute button-margin"
         size="10px"
         @click="flagButton()"
         v-bind="flagButtonProps"
