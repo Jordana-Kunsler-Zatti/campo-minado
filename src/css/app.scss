@@ -45,7 +45,7 @@ body {
 
 .fixed-size {
   width: 10px;
-  height: 10px;  
+  height: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,5 +53,13 @@ body {
 }
 
 .button-margin {
-  margin-left: 300px
+  margin-left: 300px;
+}
+
+.fa-play {
+  font-size: 15px !important;
+}
+
+.width-550 {
+  max-width: 550px;
 }

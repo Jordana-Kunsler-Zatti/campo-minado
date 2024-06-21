@@ -1,68 +1,94 @@
 <template>
-  <q-page class="q-mt-none">
-    <q-btn round color="secondary q-ma-md" @click="handleClickHome()">
-      <font-awesome-icon class="fa-solid fa-house color-gray-dark" />
-    </q-btn>
+  <q-page-container class="flex flex-center">
+    <q-page class="q-mt-none column flex-center width-550">
+      <div class="full-width">
+        <q-btn round color="secondary q-ma-md" @click="handleClickHome()">
+          <font-awesome-icon class="fa-solid fa-house color-gray-dark" />
+        </q-btn>
+      </div>
 
-    <div class="row q-mt-md flex-center">
-      <q-card class="flex-center no-box-shadow">
-        <q-card-section class="column flex-center">
-          <q-icon name="flag" size="40px" color="red" />
-          {{ bombCount }} Bombas
-        </q-card-section>
-      </q-card>
-      <q-card class="flex-center no-box-shadow">
-        <q-card-section class="column flex-center">
-          <q-icon name="timer" size="40px" color="blue" />
-          {{ timer }}
-        </q-card-section>
-      </q-card>
-      <q-card class="flex-center no-box-shadow">
-        <q-card-section class="column flex-center">
-          <q-icon name="fa-solid fa-trophy" size="40px" color="yellow" />
-          1 Campo
-        </q-card-section>
-      </q-card>
-    </div>
+      <div class="row q-mt-md flex-center">
+        <q-card class="flex-center no-box-shadow">
+          <q-card-section class="column flex-center">
+            <q-icon name="flag" size="40px" color="red" />
+            {{ bombCount }} Bombas
+          </q-card-section>
+        </q-card>
+        <q-card class="flex-center no-box-shadow">
+          <q-card-section class="column flex-center">
+            <q-icon name="timer" size="40px" color="blue" />
+            {{ timer.minutes }}:{{ timer.seconds }}
+          </q-card-section>
+        </q-card>
+        <q-card class="flex-center no-box-shadow">
+          <q-card-section class="column flex-center">
+            <q-icon name="fa-solid fa-trophy" size="40px" color="yellow" />
+            1 Campo
+          </q-card-section>
+        </q-card>
+      </div>
 
-    <!-- botão para iniciar o jogo e colocar bandeiras -->
-    <div class="row flex-center q-mb-md">
-      <q-btn @click="init()" icon-right="send" v-bind="startButton" />
-
-      <q-toggle
-        color="red"
-        v-model="isFlag"
-        @click="flagButton()"
-        checked-icon="flag"
-        unchecked-icon="fa-solid fa-bomb"
-        size="lg"
-      />
-    </div>
-
-    <!-- tabuleiro -->
-    <div class="col-auto flex-center">
-      <div v-for="row in rowsButtons" :key="row.id" class="row flex-center">
-        <div v-for="button in row.buttons" :key="button.id">
-          <q-btn
-            square
-            unelevated
-            :class="button.color"
-            :id="button.id"
-            :icon="button.icon"
-            @click="buttonFunction(row.id, button.id)"
-            v-bind="disableField"
-            size="10px"
+      <div class="row no-wrap">
+        <div class="col col-md-12 flex justify-center">
+          <div>
+            <q-btn
+              @click="init()"
+              icon-right="fa-solid fa-play"
+              v-bind="startButton"
+            />
+          </div>
+        </div>
+        <div class="col-6 col-md-6 flex justify-end">
+          <q-toggle
+            color="red"
+            v-model="isFlag"
+            checked-icon="flag"
+            unchecked-icon="fa-solid fa-bomb"
+            size="lg"
           />
         </div>
       </div>
-    </div>
-  </q-page>
+
+      <!-- tabuleiro -->
+      <div class="col-auto flex-center">
+        <div
+          v-for="row in rowsButtons"
+          :key="row.id"
+          class="no-wrap row flex-center"
+        >
+          <div v-for="button in row.buttons" :key="button.id">
+            <q-btn
+              square
+              unelevated
+              :class="button.color"
+              :id="button.id"
+              :icon="button.icon"
+              @click="buttonFunction(row.id, button.id)"
+              v-bind="disableField"
+              size="10px"
+            />
+          </div>
+        </div>
+      </div>
+    </q-page>
+  </q-page-container>
 </template>
 
 <script>
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
 import { defineComponent, ref } from "vue";
+
+// todo: TEM QUE AJUSTAR AQUI
+const noBombToast = () => {
+  return Swal.fire({
+    position: "top-end",
+    width: "20em",
+    title: `<label class='titleToast'> "Número de bandeiras excedido! Você já sinalizou todas as bombas que esse tabuleiro possui!"</label>`,
+    showConfirmButton: false,
+    // timer: 1500,
+  });
+};
 
 const gameOverToast = () => {
   return Swal.fire(
@@ -76,13 +102,8 @@ const gameOverToast = () => {
         "Página inicial <font-awesome-icon class='fa-solid fa-house' />",
     })
   ).then((result) => {
-    if (result.isConfirmed) {
-      window.location.reload();
-      console.log("Confirmando");
-    } else if (result.isDenied) {
-      window.location.href = "/";
-      console.log("Negado");
-    }
+    if (result.isConfirmed) window.location.reload();
+    else if (result.isDenied) window.location.href = "/";
   });
 };
 
@@ -112,8 +133,6 @@ export default defineComponent({
       disableField: { disable: true, class: "fixed-size" },
       startButton: { disable: false, label: "Começar", color: "primary" },
       rowsButtons: [],
-      flagButtonProps: { color: "grey-5", icon: "flag" },
-      flagSwitch: false,
       iconNumbers: [
         "",
         "fa-solid fa-1",
@@ -122,14 +141,22 @@ export default defineComponent({
         "fa-solid fa-4",
         "fa-solid fa-5",
       ],
-      bombCount: 0,
-      timer: "00:00",
+      bombCount: 13,
+      timer: {
+        intervalId: 0,
+        minutes: "00",
+        seconds: "00",
+      },
     };
   },
 
   // o created é realizado para criar os botões ao carregar a page
   created() {
     this.createButtons();
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
@@ -157,55 +184,42 @@ export default defineComponent({
       }
     },
 
-    // Função para colocar bandeiras onde tem bombas
-    flagButton() {
-      if (this.flagButtonProps.color == "grey-5") {
-        this.flagButtonProps.color = "red";
-        this.flagButtonProps.icon = "timer";
-        this.flagSwitch = true;
-      } else {
-        this.flagButtonProps.color = "grey-5";
-        this.flagButtonProps.icon = "flag";
-        this.flagSwitch = false;
-      }
-    },
-
     // Função atribuida aos botoes do campo para realizar as ações do jogo
     buttonFunction(row, col) {
       let button = this.rowsButtons[row].buttons[col];
 
-      if (this.flagSwitch == true && button.icon == "flag") {
-        button.icon = "";
-        this.bombCount--;
-      } else if (this.flagSwitch == true && button.icon == "") {
-        button.icon = "flag";
-        this.bombCount++;
-      }
+      if (button.color.includes("beige")) return;
 
-      if (this.flagSwitch == false) {
-        this.revealTiles(row, col);
-      }
+      if (this.isFlag) {
+        if (button.icon == "flag") {
+          button.icon = "";
+          this.bombCount++;
+        } else if (button.icon == "") {
+          if (this.bombCount > 12) {
+            button.icon = "flag";
+            this.bombCount--;
+          } else noBombToast();
+        }
+      } else this.revealTiles(row, col);
     },
 
     revealTiles(row, col) {
       let button = this.rowsButtons[row].buttons[col];
       let coord = this.game.board[row][col];
+
       if (coord == "M") {
         gameOverToast();
         return;
       }
-      if (button.color == "bg-green-light") {
-        button.color = "bg-beige-light";
-      } else if (button.color == "bg-green-medium") {
-        button.color = "bg-beige-medium";
-      }
+
+      button.color = button.color.replace("green", "beige");
+
       if (button.icon == "flag") {
         button.icon = "";
         this.bombCount--;
       }
-      if (coord != 0) {
-        button.icon = this.iconNumbers[coord];
-      }
+
+      if (coord != 0) button.icon = this.iconNumbers[coord];
     },
 
     // Função que está atribuída ao botão -começar- para inicializar um novo jogo
@@ -214,18 +228,31 @@ export default defineComponent({
       this.generateMinesPositions();
       this.insertMines();
       this.updateBoardNumbers();
-      // this.showBoard();
+
       // habilita o toque nos quadrados do campo minado
       this.disableField.disable = false;
+
       // desabilita o botão -começar- e muda o texto e a cor
       this.startButton.disable = true;
       this.startButton.label = "Continuar";
       this.startButton.color = "secondary";
+      this.startTimer(0);
+    },
 
-      this.timer = setInterval(() => {
-        // if (this.time > 0) {
-        this.time++;
-        // }
+    startTimer(duration) {
+      var timer = duration;
+
+      this.timer.intervalId = setInterval(() => {
+        this.timer.minutes = parseInt(timer / 60, 10);
+        this.timer.seconds = parseInt(timer % 60, 10);
+
+        if (this.timer.minutes < 10)
+          this.timer.minutes = `0${this.timer.minutes}`;
+
+        if (this.timer.seconds < 10)
+          this.timer.seconds = `0${this.timer.seconds}`;
+
+        ++timer;
       }, 1000);
     },
 
@@ -310,7 +337,6 @@ export default defineComponent({
           console.log("Confirmando");
         } else if (result.isDenied) {
           window.location.href = "/";
-          console.log("Negado");
         }
       });
     },
