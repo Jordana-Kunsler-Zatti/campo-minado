@@ -258,8 +258,6 @@ export default {
       });
     },
 
-    handlePause() {},
-
     // Função que está atribuída ao botão -começar- para inicializar um novo jogo
     init() {
       this.generateEmptyBoard();
@@ -372,43 +370,24 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          console.log("entrei na confirmação, dessa caralha");
-          const dataaaa = this;
-          console.log({ dataaaa });
-          console.log({
-            dataaaaNaMao: {
-              isFlag: this.isFlag,
-              game: this.game,
-              disableField: this.disableField,
-              startButton: this.startButton,
-              rowsButtons: this.rowsButtons,
-              iconNumbers: this.iconNumbers,
-              timer: this.timer,
-              victories: this.victories,
-              tilesRevealed: this.tilesRevealed,
-            }
-        //     LocalStorage.set("data", JSON.stringify(dataaaa));
+          let data = {
+            isFlag: this.isFlag,
+            game: this.game,
+            disableField: this.disableField,
+            startButton: this.startButton,
+            rowsButtons: this.rowsButtons,
+            iconNumbers: this.iconNumbers,
+            timer: this.timer,
+            victories: this.victories,
+            tilesRevealed: this.tilesRevealed,
+          }
+          LocalStorage.set("data", JSON.stringify(data));
         //     // window.location.href = "/";
-        //   } else if (result.isDenied) {
-        //     // LocalStorage.clear();
-        //     window.location.href = "/";
-        //   }
-        // });
-            // },
-          });
-
-          console.log({ testeSpread: { ...dataaaa } });
-          console.log({ testeObject: Object(dataaaa) });
-          // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
-          console.log({ testeJSON: JSON.stringify(dataaaa) });
-          console.log({ testeClone: cloneDeep(dataaaa) });
-          const newData = JSON.stringify(dataaaa);
-          // LocalStorage.set("data", newData);
-          // window.location.href = "/";
-        } else if (result.isDenied) {
-          // LocalStorage.clear();
-          window.location.href = "/";
-        }
+          }
+         else if (result.isDenied) {
+            // LocalStorage.clear();
+            window.location.href = "/";
+          }
       });
     },
   },
@@ -424,19 +403,19 @@ export default {
   },
 
   mounted() {
-    let allData = LocalStorage.getAll().data;
+    let allData = LocalStorage.getItem('data');
 
     if (allData) {
       allData = JSON.parse(allData);
+      console.log(allData);
+      // if (Object.keys(allData).length) {
+      //   for (const key of Object.keys(allData)) {
+      //     this[key] = allData[key];
+      //   }
 
-      if (Object.keys(allData).length) {
-        for (const key of Object.keys(allData)) {
-          this[key] = allData[key];
-        }
-
-        this.startTimer(this.timer.seconds + this.timer.minutes * 60);
-        LocalStorage.clear();
-      }
+      //   this.startTimer(this.timer.seconds + this.timer.minutes * 60);
+      //   LocalStorage.clear();
+      // }
     }
   },
 };
