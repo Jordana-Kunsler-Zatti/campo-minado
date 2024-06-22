@@ -11,7 +11,7 @@
         <q-card class="flex-center no-box-shadow">
           <q-card-section class="column flex-center">
             <q-icon name="flag" size="40px" color="red" />
-            {{ bombCount }} Bombas
+            {{ game.bombCount }} Bombas
           </q-card-section>
         </q-card>
         <q-card class="flex-center no-box-shadow">
@@ -23,7 +23,7 @@
         <q-card class="flex-center no-box-shadow">
           <q-card-section class="column flex-center">
             <q-icon name="fa-solid fa-trophy" size="40px" color="yellow" />
-            1 Campo
+            {{ victories }} Vitórias
           </q-card-section>
         </q-card>
       </div>
@@ -77,7 +77,8 @@
 <script>
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
+import { LocalStorage } from 'quasar';
 
 // todo: TEM QUE AJUSTAR AQUI
 const noBombToast = () => {
@@ -107,7 +108,7 @@ const gameOverToast = () => {
   });
 };
 
-export default defineComponent({
+export default ({
   name: "GamePage",
   data() {
     return {
@@ -128,7 +129,7 @@ export default defineComponent({
         minesLength: 13,
         board: [],
         minesPositions: [],
-        tilesRevealed: 0,
+        bombCount: 13,
       },
       disableField: { disable: true, class: "fixed-size" },
       startButton: { disable: false, label: "Começar", color: "primary" },
@@ -141,18 +142,19 @@ export default defineComponent({
         "fa-solid fa-4",
         "fa-solid fa-5",
       ],
-      bombCount: 13,
       timer: {
         intervalId: 0,
         minutes: "00",
         seconds: "00",
       },
+      victories: 0,
+      tilesRevealed: 0,
     };
   },
 
   // o created é realizado para criar os botões ao carregar a page
   created() {
-    this.createButtons();
+      this.createButtons();
   },
 
   beforeDestroy() {
@@ -186,6 +188,7 @@ export default defineComponent({
 
     // Função atribuida aos botoes do campo para realizar as ações do jogo
     buttonFunction(row, col) {
+      this.handleVictory()
       let button = this.rowsButtons[row].buttons[col];
 
       if (button.color.includes("beige")) return;
@@ -193,11 +196,11 @@ export default defineComponent({
       if (this.isFlag) {
         if (button.icon == "flag") {
           button.icon = "";
-          this.bombCount++;
+          this.game.bombCount++;
         } else if (button.icon == "") {
-          if (this.bombCount > 12) {
+          if (this.game.bombCount > 0) {
             button.icon = "flag";
-            this.bombCount--;
+            this.game.bombCount--;
           } else noBombToast();
         }
       } else this.revealTiles(row, col);
@@ -208,6 +211,7 @@ export default defineComponent({
       let coord = this.game.board[row][col];
 
       if (coord == "M") {
+        LocalStorage.clear()
         gameOverToast();
         return;
       }
@@ -216,10 +220,36 @@ export default defineComponent({
 
       if (button.icon == "flag") {
         button.icon = "";
-        this.bombCount--;
+        this.game.bombCount--;
       }
 
       if (coord != 0) button.icon = this.iconNumbers[coord];
+      
+      this.tilesRevealed++
+    },
+
+    handleVictory() {
+      Swal.fire(
+        swalConfs({
+          title: "Você venceu!",
+          icon: "fa-circle-play",
+          iconColor: "#31c43b",
+          showCloseButton: true,
+          buttonConfimLabel:
+            "Jogar outra",
+          buttonDenyLabel:
+            "Desistir",
+        })
+      ).then((result) => {
+        if (result.isConfirmed) {
+          // LocalStorage.clear();
+          LocalStorage.set('victories', ++this.victories);
+          window.location.reload();
+        } else if (result.isDenied) {
+          LocalStorage.clear();
+          window.location.href = "/";
+        }
+      });
     },
 
     // Função que está atribuída ao botão -começar- para inicializar um novo jogo
@@ -334,12 +364,53 @@ export default defineComponent({
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          console.log("Confirmando");
+          LocalStorage.set('data',{})
         } else if (result.isDenied) {
+          // LocalStorage.clear();
           window.location.href = "/";
         }
       });
     },
+  },
+
+  watch: {
+    tilesRevealed: {
+      handler(tilesRevealed){
+        // LocalStorage.set('tilesRevealed', tilesRevealed);
+        if (tilesRevealed === 131) {
+          this.handleVictory();
+        }
+      }
+    },
+  },
+
+  // TODO: Arrumar isso
+  mounted() {
+  //   let game = LocalStorage.getItem('game');
+  //   if (game) {
+  //     Object.assign(this.game,game);
+  //   }
+  //   let disableField = LocalStorage.getItem('disableField');
+  //   if(disableField) {
+  //     Object.assign(this.disableField,disableField);
+  //   }
+    let victories = LocalStorage.getItem('victories')
+    if (victories) {
+      this.victories = victories
+    }
+  //   let tilesRevealed = LocalStorage.getItem('tilesRevealed')
+  //   if (tilesRevealed) {
+  //     Object.assign(this.tilesRevealed,tilesRevealed)
+  //   }
+  //   let startButton = LocalStorage.getItem('startButton')
+  //   if (startButton) {
+  //     Object.assign(this.startButton,startButton)
+  //   }
+  // let buttons = LocalStorage.getItem('buttons'); 
+  //     if (buttons){
+  //       Object.assign(this.rowsButtons,buttons);
+  //       return
+  //     }
   },
 });
 </script>
