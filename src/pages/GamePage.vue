@@ -371,8 +371,10 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          LocalStorage.set("data", JSON.stringify({ ...this }));
-          window.location.href = "/";
+          console.log(JSON.stringify(this));
+          const newData = JSON.stringify(this);
+          LocalStorage.set("data", newData);
+          // window.location.href = "/";
         } else if (result.isDenied) {
           // LocalStorage.clear();
           window.location.href = "/";
