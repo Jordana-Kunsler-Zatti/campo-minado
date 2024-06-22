@@ -389,6 +389,7 @@ export default {
           });
 
           console.log({ teste: { ...dataaaa } });
+          console.log({ teste: Object(dataaaa) });
           // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
           console.log(JSON.stringify(dataaaa));
           const newData = JSON.stringify(dataaaa);
