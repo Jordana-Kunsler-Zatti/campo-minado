@@ -104,8 +104,14 @@ const gameOverToast = () => {
         "Página inicial <font-awesome-icon class='fa-solid fa-house' />",
     })
   ).then((result) => {
-    if (result.isConfirmed) window.location.reload();
-    else if (result.isDenied) window.location.href = "/";
+    if (result.isConfirmed){
+      LocalStorage.clear();
+      window.location.reload();
+    }
+    else if (result.isDenied){
+      LocalStorage.clear();
+      window.location.href = "/";
+    }
   });
 };
 
@@ -383,6 +389,7 @@ export default {
           LocalStorage.set("data", JSON.stringify(data));
           window.location.href = "/";
         } else if (result.isDenied) {
+          LocalStorage.clear();
           window.location.href = "/";
         }
       });
