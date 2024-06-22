@@ -77,7 +77,6 @@
 </template>
 
 <script>
-import { cloneDeep } from "lodash";
 import { LocalStorage } from "quasar";
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
@@ -248,7 +247,6 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          // LocalStorage.clear();
           LocalStorage.set("victories", ++this.victories);
           window.location.reload();
         } else if (result.isDenied) {
@@ -380,14 +378,12 @@ export default {
             timer: this.timer,
             victories: this.victories,
             tilesRevealed: this.tilesRevealed,
-          }
+          };
           LocalStorage.set("data", JSON.stringify(data));
-        //     // window.location.href = "/";
-          }
-         else if (result.isDenied) {
-            // LocalStorage.clear();
-            window.location.href = "/";
-          }
+          window.location.href = "/";
+        } else if (result.isDenied) {
+          window.location.href = "/";
+        }
       });
     },
   },
@@ -403,19 +399,18 @@ export default {
   },
 
   mounted() {
-    let allData = LocalStorage.getItem('data');
+    let allData = LocalStorage.getItem("data");
 
     if (allData) {
       allData = JSON.parse(allData);
-      console.log(allData);
-      // if (Object.keys(allData).length) {
-      //   for (const key of Object.keys(allData)) {
-      //     this[key] = allData[key];
-      //   }
+      if (Object.keys(allData).length) {
+        for (const key of Object.keys(allData)) {
+          this[key] = allData[key];
+        }
 
-      //   this.startTimer(this.timer.seconds + this.timer.minutes * 60);
-      //   LocalStorage.clear();
-      // }
+        this.startTimer(this.timer.seconds + this.timer.minutes * 60);
+        LocalStorage.clear();
+      }
     }
   },
 };
