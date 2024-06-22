@@ -387,10 +387,12 @@ export default {
               tilesRevealed: this.tilesRevealed,
             },
           });
-          console.log({ dataaaaTeste: dataaaa.map((a) => a) });
+
+          console.log({ teste: { ...dataaaa } });
+          // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
           console.log(JSON.stringify(dataaaa));
           const newData = JSON.stringify(dataaaa);
-          LocalStorage.set("data", newData);
+          // LocalStorage.set("data", newData);
           // window.location.href = "/";
         } else if (result.isDenied) {
           // LocalStorage.clear();
