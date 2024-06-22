@@ -371,7 +371,7 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          LocalStorage.set("data", { ...this });
+          LocalStorage.set("data", JSON.stringify({ ...this }));
           window.location.href = "/";
         } else if (result.isDenied) {
           // LocalStorage.clear();
@@ -392,7 +392,8 @@ export default {
   },
 
   mounted() {
-    let allData = LocalStorage.getAll().data;
+    let allData = LocalStorage.getAll();
+    allData = JSON.parse(allData).data;
 
     if (allData && Object.keys(allData).length) {
       for (const key of Object.keys(allData)) {
