@@ -374,6 +374,7 @@ export default {
           console.log("entrei na confirmação, dessa caralha");
           const dataaaa = this;
           console.log({ dataaaa });
+          console.log({ dataaaaTeste: dataaaa.map((a) => a) });
           console.log(JSON.stringify(dataaaa));
           const newData = JSON.stringify(dataaaa);
           LocalStorage.set("data", newData);
