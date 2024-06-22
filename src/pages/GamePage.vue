@@ -377,12 +377,12 @@ export default {
           console.log({
             dataaaa: {
               isFlag: this.isFlag,
-              game: { ...this.game },
-              disableField: { ...this.disableField },
-              startButton: this.startButton,
-              rowsButtons: [...this.rowsButtons],
-              iconNumbers: [...this.iconNumbers],
-              timer: { ...this.timer },
+              game: Object.assign({}, this.game),
+              disableField: Object.assign({}, this.disableField),
+              startButton: Object.assign({}, this.startButton),
+              rowsButtons: Array.from(this.rowsButtons),
+              iconNumbers: Array.from(this.iconNumbers),
+              timer: Object.assign({}, this.timer),
               victories: this.victories,
               tilesRevealed: this.tilesRevealed,
             },
