@@ -39,7 +39,7 @@
             />
           </div>
         </div>
-        <div class="col-6 col-md-6 flex justify-end">
+        <div class="col-6 col-md-6">
           <q-toggle
             color="red"
             v-model="isFlag"
@@ -67,6 +67,7 @@
               @click="buttonFunction(row.id, button.id)"
               v-bind="disableField"
               size="10px"
+              padding="none"
             />
           </div>
         </div>
@@ -192,7 +193,6 @@ export default {
 
     // Função atribuida aos botoes do campo para realizar as ações do jogo
     buttonFunction(row, col) {
-      // this.handleVictory();
       let button = this.rowsButtons[row].buttons[col];
 
       if (button.color.includes("beige")) return;
@@ -207,7 +207,10 @@ export default {
             this.game.bombCount--;
           } else noBombToast();
         }
-      } else this.revealTiles(row, col);
+      } else {
+        if (button.icon == "flag") return;
+        this.revealTiles(row, col);
+      }
     },
 
     revealTiles(row, col) {
