@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
 import { LocalStorage } from "quasar";
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
@@ -371,7 +372,11 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-            let dataaaa = {
+          console.log("entrei na confirmação, dessa caralha");
+          const dataaaa = this;
+          console.log({ dataaaa });
+          console.log({
+            dataaaaNaMao: {
               isFlag: this.isFlag,
               game: this.game,
               disableField: this.disableField,
@@ -382,13 +387,29 @@ export default {
               victories: this.victories,
               tilesRevealed: this.tilesRevealed,
             }
-            LocalStorage.set("data", JSON.stringify(dataaaa));
-            // window.location.href = "/";
-          } else if (result.isDenied) {
-            // LocalStorage.clear();
-            window.location.href = "/";
-          }
-        });
+        //     LocalStorage.set("data", JSON.stringify(dataaaa));
+        //     // window.location.href = "/";
+        //   } else if (result.isDenied) {
+        //     // LocalStorage.clear();
+        //     window.location.href = "/";
+        //   }
+        // });
+            // },
+          });
+
+          console.log({ testeSpread: { ...dataaaa } });
+          console.log({ testeObject: Object(dataaaa) });
+          // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
+          console.log({ testeJSON: JSON.stringify(dataaaa) });
+          console.log({ testeClone: cloneDeep(dataaaa) });
+          const newData = JSON.stringify(dataaaa);
+          // LocalStorage.set("data", newData);
+          // window.location.href = "/";
+        } else if (result.isDenied) {
+          // LocalStorage.clear();
+          window.location.href = "/";
+        }
+      });
     },
   },
 
