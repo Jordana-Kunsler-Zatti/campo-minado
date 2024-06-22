@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "npm install && quasar dev",
-    "build": "quasar build"
+    "build": "quasar build -m pwa"
   },
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
@@ -22,7 +22,8 @@
     "vue-sweetalert2": "^5.0.9"
   },
   "devDependencies": {
-    "@quasar/app-webpack": "^3.9.2"
+    "@quasar/app-webpack": "^3.9.2",
+    "workbox-webpack-plugin": "^7.1.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
