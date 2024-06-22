@@ -371,35 +371,24 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          console.log("entrei na confirmação, dessa caralha");
-          const dataaaa = this;
-          console.log({ dataaaa });
-          console.log({
-            dataaaa: {
+            let dataaaa = {
               isFlag: this.isFlag,
-              game: Object.assign({}, this.game),
-              disableField: Object.assign({}, this.disableField),
-              startButton: Object.assign({}, this.startButton),
-              rowsButtons: Array.from(this.rowsButtons),
-              iconNumbers: Array.from(this.iconNumbers),
-              timer: Object.assign({}, this.timer),
+              game: this.game,
+              disableField: this.disableField,
+              startButton: this.startButton,
+              rowsButtons: this.rowsButtons,
+              iconNumbers: this.iconNumbers,
+              timer: this.timer,
               victories: this.victories,
               tilesRevealed: this.tilesRevealed,
-            },
-          });
-
-          console.log({ teste: { ...dataaaa } });
-          console.log({ teste: Object(dataaaa) });
-          // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
-          console.log(JSON.stringify(dataaaa));
-          const newData = JSON.stringify(dataaaa);
-          // LocalStorage.set("data", newData);
-          // window.location.href = "/";
-        } else if (result.isDenied) {
-          // LocalStorage.clear();
-          window.location.href = "/";
-        }
-      });
+            }
+            LocalStorage.set("data", JSON.stringify(dataaaa));
+            // window.location.href = "/";
+          } else if (result.isDenied) {
+            // LocalStorage.clear();
+            window.location.href = "/";
+          }
+        });
     },
   },
 
