@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
 import { LocalStorage } from "quasar";
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
@@ -375,7 +376,7 @@ export default {
           const dataaaa = this;
           console.log({ dataaaa });
           console.log({
-            dataaaa: {
+            dataaaaNaMao: {
               isFlag: this.isFlag,
               game: Object.assign({}, this.game),
               disableField: Object.assign({}, this.disableField),
@@ -388,10 +389,11 @@ export default {
             },
           });
 
-          console.log({ teste: { ...dataaaa } });
-          console.log({ teste: Object(dataaaa) });
+          console.log({ testeSpread: { ...dataaaa } });
+          console.log({ testeObject: Object(dataaaa) });
           // console.log({ dataaaaTeste: dataaaa.map((a) => a) });
-          console.log(JSON.stringify(dataaaa));
+          console.log({ testeJSON: JSON.stringify(dataaaa) });
+          console.log({ testeClone: cloneDeep(dataaaa) });
           const newData = JSON.stringify(dataaaa);
           // LocalStorage.set("data", newData);
           // window.location.href = "/";
