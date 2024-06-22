@@ -379,6 +379,7 @@ export default {
             victories: this.victories,
             tilesRevealed: this.tilesRevealed,
           };
+
           LocalStorage.set("data", JSON.stringify(data));
           window.location.href = "/";
         } else if (result.isDenied) {
@@ -409,9 +410,13 @@ export default {
         }
 
         this.startTimer(this.timer.seconds + this.timer.minutes * 60);
-        LocalStorage.clear();
       }
     }
+
+    let victories = LocalStorage.getItem("victories");
+    if (victories) this.victories = victories;
+
+    if (victories || data) LocalStorage.clear();
   },
 };
 </script>
