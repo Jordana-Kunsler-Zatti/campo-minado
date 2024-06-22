@@ -35,6 +35,7 @@
               @click="init()"
               icon-right="fa-solid fa-play"
               v-bind="startButton"
+              class="no-wrap"
             />
           </div>
         </div>
@@ -75,19 +76,18 @@
 </template>
 
 <script>
+import { LocalStorage } from "quasar";
 import { swalConfs } from "src/utils/utils-swal";
 import Swal from "sweetalert2";
 import { ref } from "vue";
-import { LocalStorage } from 'quasar';
 
-// todo: TEM QUE AJUSTAR AQUI
 const noBombToast = () => {
   return Swal.fire({
     position: "top-end",
     width: "20em",
-    title: `<label class='titleToast'> "Número de bandeiras excedido! Você já sinalizou todas as bombas que esse tabuleiro possui!"</label>`,
+    html: `<label class='titleToast'> Número de bandeiras excedido! Você já sinalizou todas as bombas que esse tabuleiro possui!</label>`,
     showConfirmButton: false,
-    // timer: 1500,
+    timer: 3000,
   });
 };
 
@@ -108,7 +108,7 @@ const gameOverToast = () => {
   });
 };
 
-export default ({
+export default {
   name: "GamePage",
   data() {
     return {
@@ -132,7 +132,11 @@ export default ({
         bombCount: 13,
       },
       disableField: { disable: true, class: "fixed-size" },
-      startButton: { disable: false, label: "Começar", color: "primary" },
+      startButton: {
+        disable: false,
+        label: "Começar",
+        color: "primary",
+      },
       rowsButtons: [],
       iconNumbers: [
         "",
@@ -154,7 +158,7 @@ export default ({
 
   // o created é realizado para criar os botões ao carregar a page
   created() {
-      this.createButtons();
+    this.createButtons();
   },
 
   beforeDestroy() {
@@ -188,7 +192,7 @@ export default ({
 
     // Função atribuida aos botoes do campo para realizar as ações do jogo
     buttonFunction(row, col) {
-      this.handleVictory()
+      // this.handleVictory();
       let button = this.rowsButtons[row].buttons[col];
 
       if (button.color.includes("beige")) return;
@@ -211,7 +215,7 @@ export default ({
       let coord = this.game.board[row][col];
 
       if (coord == "M") {
-        LocalStorage.clear()
+        LocalStorage.clear();
         gameOverToast();
         return;
       }
@@ -224,26 +228,24 @@ export default ({
       }
 
       if (coord != 0) button.icon = this.iconNumbers[coord];
-      
-      this.tilesRevealed++
+
+      this.tilesRevealed++;
     },
 
     handleVictory() {
       Swal.fire(
         swalConfs({
           title: "Você venceu!",
-          icon: "fa-circle-play",
+          icon: "fa-circle-check",
           iconColor: "#31c43b",
           showCloseButton: true,
-          buttonConfimLabel:
-            "Jogar outra",
-          buttonDenyLabel:
-            "Desistir",
+          buttonConfimLabel: "Jogar novamente",
+          buttonDenyLabel: "Desistir",
         })
       ).then((result) => {
         if (result.isConfirmed) {
           // LocalStorage.clear();
-          LocalStorage.set('victories', ++this.victories);
+          LocalStorage.set("victories", ++this.victories);
           window.location.reload();
         } else if (result.isDenied) {
           LocalStorage.clear();
@@ -251,6 +253,8 @@ export default ({
         }
       });
     },
+
+    handlePause() {},
 
     // Função que está atribuída ao botão -começar- para inicializar um novo jogo
     init() {
@@ -364,7 +368,8 @@ export default ({
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          LocalStorage.set('data',{})
+          LocalStorage.set("data", { ...this });
+          window.location.href = "/";
         } else if (result.isDenied) {
           // LocalStorage.clear();
           window.location.href = "/";
@@ -375,42 +380,25 @@ export default ({
 
   watch: {
     tilesRevealed: {
-      handler(tilesRevealed){
-        // LocalStorage.set('tilesRevealed', tilesRevealed);
+      handler(tilesRevealed) {
         if (tilesRevealed === 131) {
           this.handleVictory();
         }
-      }
+      },
     },
   },
 
-  // TODO: Arrumar isso
   mounted() {
-  //   let game = LocalStorage.getItem('game');
-  //   if (game) {
-  //     Object.assign(this.game,game);
-  //   }
-  //   let disableField = LocalStorage.getItem('disableField');
-  //   if(disableField) {
-  //     Object.assign(this.disableField,disableField);
-  //   }
-    let victories = LocalStorage.getItem('victories')
-    if (victories) {
-      this.victories = victories
+    let allData = LocalStorage.getAll().data;
+
+    if (allData && Object.keys(allData).length) {
+      for (const key of Object.keys(allData)) {
+        this[key] = allData[key];
+      }
+
+      this.startTimer(this.timer.seconds + this.timer.minutes * 60);
+      LocalStorage.clear();
     }
-  //   let tilesRevealed = LocalStorage.getItem('tilesRevealed')
-  //   if (tilesRevealed) {
-  //     Object.assign(this.tilesRevealed,tilesRevealed)
-  //   }
-  //   let startButton = LocalStorage.getItem('startButton')
-  //   if (startButton) {
-  //     Object.assign(this.startButton,startButton)
-  //   }
-  // let buttons = LocalStorage.getItem('buttons'); 
-  //     if (buttons){
-  //       Object.assign(this.rowsButtons,buttons);
-  //       return
-  //     }
   },
-});
+};
 </script>
