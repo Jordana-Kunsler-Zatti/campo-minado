@@ -371,8 +371,11 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
-          console.log(JSON.stringify(this));
-          const newData = JSON.stringify(this);
+          console.log("entrei na confirmação, dessa caralha");
+          const dataaaa = this;
+          console.log({ dataaaa });
+          console.log(JSON.stringify(dataaaa));
+          const newData = JSON.stringify(dataaaa);
           LocalStorage.set("data", newData);
           // window.location.href = "/";
         } else if (result.isDenied) {
