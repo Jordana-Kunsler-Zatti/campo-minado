@@ -392,16 +392,19 @@ export default {
   },
 
   mounted() {
-    let allData = LocalStorage.getAll();
-    allData = JSON.parse(allData).data;
+    let allData = LocalStorage.getAll().data;
 
-    if (allData && Object.keys(allData).length) {
-      for (const key of Object.keys(allData)) {
-        this[key] = allData[key];
+    if (allData) {
+      allData = JSON.parse(allData);
+
+      if (Object.keys(allData).length) {
+        for (const key of Object.keys(allData)) {
+          this[key] = allData[key];
+        }
+
+        this.startTimer(this.timer.seconds + this.timer.minutes * 60);
+        LocalStorage.clear();
       }
-
-      this.startTimer(this.timer.seconds + this.timer.minutes * 60);
-      LocalStorage.clear();
     }
   },
 };
