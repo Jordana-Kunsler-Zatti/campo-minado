@@ -253,6 +253,7 @@ export default {
         })
       ).then((result) => {
         if (result.isConfirmed) {
+          LocalStorage.clear();
           LocalStorage.set("victories", ++this.victories);
           window.location.reload();
         } else if (result.isDenied) {
