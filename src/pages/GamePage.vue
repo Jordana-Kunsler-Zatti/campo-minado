@@ -35,7 +35,7 @@
               @click="init()"
               icon-right="fa-solid fa-play"
               v-bind="startButton"
-              class="no-wrap"
+              class="no-wrap width-130"
             />
           </div>
         </div>
@@ -46,6 +46,7 @@
             checked-icon="flag"
             unchecked-icon="fa-solid fa-bomb"
             size="lg"
+            class="q-ml-sm"
           />
         </div>
       </div>
@@ -86,7 +87,7 @@ const noBombToast = () => {
   return Swal.fire({
     position: "top-end",
     width: "20em",
-    html: `<label class='titleToast'> Número de bandeiras excedido! Você já sinalizou todas as bombas que esse tabuleiro possui!</label>`,
+    html: `<label class='titleToast'> Você já usou todas as bandeiras referente em número de bombas do tabuleiro! Remova alguma bandeira ou revele as demias casas.</label>`,
     showConfirmButton: false,
     timer: 3000,
   });
@@ -104,11 +105,10 @@ const gameOverToast = () => {
         "Página inicial <font-awesome-icon class='fa-solid fa-house' />",
     })
   ).then((result) => {
-    if (result.isConfirmed){
+    if (result.isConfirmed) {
       LocalStorage.clear();
       window.location.reload();
-    }
-    else if (result.isDenied){
+    } else if (result.isDenied) {
       LocalStorage.clear();
       window.location.href = "/";
     }
@@ -424,7 +424,7 @@ export default {
     let victories = LocalStorage.getItem("victories");
     if (victories) this.victories = victories;
 
-    if (victories || data) LocalStorage.clear();
+    if (victories || allData) LocalStorage.clear();
   },
 };
 </script>
